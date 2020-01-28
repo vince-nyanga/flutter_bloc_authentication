@@ -11,38 +11,38 @@ class LoginPage extends StatelessWidget {
         title: Text('Login'),
       ),
       body: SafeArea(
-        minimum: const EdgeInsets.all(16),
-        child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-          builder: (context, state){
-            final authBloc = BlocProvider.of<AuthenticationBloc>(context);
-            if (state is AuthenticationNotAuthenticated){
-              return _AuthForm();
-            }
-            if (state is AuthenticationFailure) {
+          minimum: const EdgeInsets.all(16),
+          child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state) {
+              final authBloc = BlocProvider.of<AuthenticationBloc>(context);
+              if (state is AuthenticationNotAuthenticated) {
+                return _AuthForm();
+              }
+              if (state is AuthenticationFailure) {
+                return Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(state.message),
+                    FlatButton(
+                      textColor: Theme.of(context).primaryColor,
+                      child: Text('Retry'),
+                      onPressed: () {
+                        authBloc.add(AppLoaded());
+                      },
+                    )
+                  ],
+                ));
+              }
+              // return splash screen
               return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(state.message),
-                      FlatButton(
-                        textColor: Theme.of(context).primaryColor,
-                        child: Text('Retry'),
-                        onPressed: () {
-                          authBloc.add(AppLoaded());
-                        },
-                      )
-                    ],
-                  ));
-            }
-            return Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-              ),
-            );
-          },
-        )
-      ),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              );
+            },
+          )),
     );
   }
 }
@@ -69,7 +69,6 @@ class _SignInForm extends StatefulWidget {
 }
 
 class __SignInFormState extends State<_SignInForm> {
-
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
@@ -79,27 +78,25 @@ class __SignInFormState extends State<_SignInForm> {
   Widget build(BuildContext context) {
     final _loginBloc = BlocProvider.of<LoginBloc>(context);
 
-    _onLoginButtonPressed () {
+    _onLoginButtonPressed() {
       if (_key.currentState.validate()) {
-        _loginBloc.add(LoginInWithEmailButtonPressed(
-            email: _emailController.text,
-            password: _passwordController.text
-        ));
-      }else {
+        _loginBloc.add(LoginInWithEmailButtonPressed(email: _emailController.text, password: _passwordController.text));
+      } else {
         setState(() {
           _autoValidate = true;
         });
       }
     }
+
     return BlocListener<LoginBloc, LoginState>(
-      listener: (context, state){
-        if (state is LoginFailure){
+      listener: (context, state) {
+        if (state is LoginFailure) {
           _showError(state.error);
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
-        builder: (context, state){
-          if (state is LoginLoading){
+        builder: (context, state) {
+          if (state is LoginLoading) {
             return Center(
               child: CircularProgressIndicator(),
             );
@@ -120,8 +117,8 @@ class __SignInFormState extends State<_SignInForm> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     autocorrect: false,
-                    validator: (value){
-                      if (value == null){
+                    validator: (value) {
+                      if (value == null) {
                         return 'Email is required.';
                       }
                       return null;
@@ -139,7 +136,7 @@ class __SignInFormState extends State<_SignInForm> {
                     obscureText: true,
                     controller: _passwordController,
                     validator: (value) {
-                      if (value == null){
+                      if (value == null) {
                         return 'Password is required.';
                       }
                       return null;
@@ -166,14 +163,9 @@ class __SignInFormState extends State<_SignInForm> {
   }
 
   void _showError(String error) {
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        content: Text(error),
-        backgroundColor: Theme.of(context).errorColor,
-      )
-    );
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(error),
+      backgroundColor: Theme.of(context).errorColor,
+    ));
   }
-
 }
-
-
