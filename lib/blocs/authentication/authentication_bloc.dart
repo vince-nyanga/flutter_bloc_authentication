@@ -9,10 +9,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   AuthenticationBloc(AuthenticationService authenticationService)
       : assert(authenticationService != null),
-        _authenticationService = authenticationService;
-
-  @override
-  AuthenticationState get initialState => AuthenticationInitial();
+        _authenticationService = authenticationService,
+        super(AuthenticationInitial());
 
   @override
   Stream<AuthenticationState> mapEventToState(AuthenticationEvent event) async* {

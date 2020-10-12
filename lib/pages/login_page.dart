@@ -103,7 +103,7 @@ class __SignInFormState extends State<_SignInForm> {
           }
           return Form(
             key: _key,
-            autovalidate: _autoValidate,
+            autovalidateMode: _autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

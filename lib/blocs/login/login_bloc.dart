@@ -13,10 +13,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       : assert(authenticationBloc != null),
         assert(authenticationService != null),
         _authenticationBloc = authenticationBloc,
-        _authenticationService = authenticationService;
-
-  @override
-  LoginState get initialState => LoginInitial();
+        _authenticationService = authenticationService,
+        super(LoginInitial());
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
@@ -29,14 +27,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     yield LoginLoading();
     try {
       final user = await _authenticationService.signInWithEmailAndPassword(event.email, event.password);
-      if (user != null){
+      if (user != null) {
         _authenticationBloc.add(UserLoggedIn(user: user));
         yield LoginSuccess();
         yield LoginInitial();
-      }else {
+      } else {
         yield LoginFailure(error: 'Something very weird just happened');
       }
-    } on AuthenticationException catch(e){
+    } on AuthenticationException catch (e) {
       yield LoginFailure(error: e.message);
     } catch (err) {
       yield LoginFailure(error: err.message ?? 'An unknown error occured');
